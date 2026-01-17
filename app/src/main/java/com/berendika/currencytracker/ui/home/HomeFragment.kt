@@ -11,6 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.berendika.currencytracker.R
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
@@ -26,8 +27,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         // Observe converted value
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.convertedValue.collect { value ->
-                    tvResult.text = "$%.2f".format(value)
+                viewModel.convertedValue.collectLatest { value ->
+                    tvResult.text = String.format(java.util.Locale.US, "$%.2f", value)
                 }
             }
         }
