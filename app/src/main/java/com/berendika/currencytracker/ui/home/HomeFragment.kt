@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.berendika.currencytracker.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.berendika.currencytracker.data.local.SettingsDataStore
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -23,17 +24,18 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         val etAmount = view.findViewById<EditText>(R.id.etAmount)
         val tvResult = view.findViewById<TextView>(R.id.tvConvertedValue)
+        val tvDefaultFiat = view.findViewById<TextView>(R.id.tvDefaultFiat)
 
-        // Observe converted value
+        val settingsStore = SettingsDataStore(requireContext())
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.convertedValue.collectLatest { value ->
-                    tvResult.text = String.format(java.util.Locale.US, "$%.2f", value)
+                settingsStore.defaultFiat.collectLatest { fiat ->
+                    tvDefaultFiat.text = "Default FIAT: $fiat"
                 }
             }
         }
 
-        // Listen to input
         etAmount.addTextChangedListener {
             val amount = it?.toString()?.toDoubleOrNull() ?: 0.0
             viewModel.onAmountChanged(amount)

@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="Theme.CurrencyTracker" parent="Theme.MaterialComponents.Light.NoActionBar" />
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.CurrencyTracker" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 </resources>
