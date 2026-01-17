@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.berendika.currencytracker.data.local.SettingsDataStore
 import com.berendika.currencytracker.data.local.FavoritesDataStore
+import com.berendika.currencytracker.data.repository.SupportedAssets
+import com.berendika.currencytracker.ui.common.CurrencyPickerBottomSheet
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -33,6 +35,20 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         val favoritesStore = FavoritesDataStore(requireContext())
         val btnFav = view.findViewById<Button>(R.id.btnAddToFavorites)
         val tvFromCurrency = view.findViewById<TextView>(R.id.tvFromCurrency)
+
+        val cryptoSymbols = SupportedAssets.cryptos.map { it.symbol }
+        if (tvFromCurrency.text.isNullOrBlank()) {
+            tvFromCurrency.text = cryptoSymbols.first()
+        }
+
+        tvFromCurrency.setOnClickListener {
+            CurrencyPickerBottomSheet(
+                title = "Select crypto",
+                items = cryptoSymbols
+            ) { selected ->
+                tvFromCurrency.text = selected
+            }.show(parentFragmentManager, "crypto_picker")
+        }
 
         val settingsStore = SettingsDataStore(requireContext())
 
