@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Amount input -->
+    <EditText
+        android:id="@+id/etAmount"
+        android:hint="Amount"
+        android:inputType="numberDecimal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- From currency picker (opens bottom sheet later) -->
+    <TextView
+        android:id="@+id/tvFromCurrency"
+        android:text="BTC"
+        android:layout_marginTop="12dp"
+        android:padding="12dp"
+        android:background="#EEEEEE"
+        android:drawableEnd="@android:drawable/arrow_down_float"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Converted value -->
+    <TextView
+        android:id="@+id/tvConvertedValue"
+        android:text="$0.00"
+        android:textSize="24sp"
+        android:layout_marginTop="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!-- Add to favorites -->
+    <Button
+        android:id="@+id/btnAddToFavorites"
+        android:text="Add to Favorites"
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
