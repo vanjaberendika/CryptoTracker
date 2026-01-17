@@ -2,6 +2,7 @@ package com.berendika.currencytracker.ui.home
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
@@ -14,6 +15,7 @@ import com.berendika.currencytracker.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.berendika.currencytracker.data.local.SettingsDataStore
+import com.berendika.currencytracker.data.local.FavoritesDataStore
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
@@ -22,9 +24,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Fiat
         val etAmount = view.findViewById<EditText>(R.id.etAmount)
         val tvResult = view.findViewById<TextView>(R.id.tvConvertedValue)
         val tvDefaultFiat = view.findViewById<TextView>(R.id.tvDefaultFiat)
+
+        // Favorite
+        val favoritesStore = FavoritesDataStore(requireContext())
+        val btnFav = view.findViewById<Button>(R.id.btnAddToFavorites)
+        val tvFromCurrency = view.findViewById<TextView>(R.id.tvFromCurrency)
 
         val settingsStore = SettingsDataStore(requireContext())
 
@@ -39,6 +47,23 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         etAmount.addTextChangedListener {
             val amount = it?.toString()?.toDoubleOrNull() ?: 0.0
             viewModel.onAmountChanged(amount)
+        }
+
+        // Update button text based on current favorites + selected symbol
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                favoritesStore.favorites.collectLatest { favs ->
+                    val symbol = tvFromCurrency.text.toString()
+                    btnFav.text = if (favs.contains(symbol)) "Remove from Favorites" else "Add to Favorites"
+                }
+            }
+        }
+        // Toggle favorite on click
+        btnFav.setOnClickListener {
+            val symbol = tvFromCurrency.text.toString()
+            viewLifecycleOwner.lifecycleScope.launch {
+                favoritesStore.toggle(symbol)
+            }
         }
     }
 }
